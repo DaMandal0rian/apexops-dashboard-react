@@ -13,16 +13,21 @@ function Billing() {
   const [costs, setCosts] = useState([]);
 
   useEffect(() => {
-    fetch("/api/billing")
-      .then((res) => res.json())
-      .then((data) => {
-        setUsage(data.usage || { labels: [], data: [] });
-        setCosts(data.costs || []);
-      })
-      .catch(() => {
-        setUsage({ labels: [], data: [] });
-        setCosts([]);
-      });
+    const fetchBilling = () => {
+      fetch("/api/billing")
+        .then((res) => res.json())
+        .then((data) => {
+          setUsage(data.usage || { labels: [], data: [] });
+          setCosts(data.costs || []);
+        })
+        .catch(() => {
+          setUsage({ labels: [], data: [] });
+          setCosts([]);
+        });
+    };
+    fetchBilling();
+    const id = setInterval(fetchBilling, 5000);
+    return () => clearInterval(id);
   }, []);
 
   const usageChart = {
