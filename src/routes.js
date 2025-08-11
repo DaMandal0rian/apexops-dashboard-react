@@ -21,6 +21,7 @@ import ServerlessManagement from "views/ServerlessManagement.js";
 import Billing from "views/Billing.js";
 import AgentManagement from "views/AgentManagement.js";
 import UserManagement from "views/UserManagement.js";
+import UserProfile from "views/UserProfile.js";
 
 var routes = [
   {
@@ -53,6 +54,14 @@ var routes = [
     rtlName: "الفواتير",
     icon: "tim-icons icon-coins",
     component: <Billing />,
+    layout: "/admin",
+  },
+  {
+    path: "/user-profile",
+    name: "User Profile",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: "tim-icons icon-single-02",
+    component: <UserProfile />,
     layout: "/admin",
   },
   {

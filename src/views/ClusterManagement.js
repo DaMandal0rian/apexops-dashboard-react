@@ -10,6 +10,7 @@ const chartOptions = {
 
 function ClusterManagement() {
   const [clusters, setClusters] = useState([]);
+  const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
     const fetchClusters = () => {
@@ -18,9 +19,20 @@ function ClusterManagement() {
         .then((data) => setClusters(data))
         .catch(() => setClusters([]));
     };
+    const fetchJobs = () => {
+      fetch("/api/cluster_jobs")
+        .then((res) => res.json())
+        .then((data) => setJobs(data))
+        .catch(() => setJobs([]));
+    };
     fetchClusters();
-    const id = setInterval(fetchClusters, 5000);
-    return () => clearInterval(id);
+    fetchJobs();
+    const id1 = setInterval(fetchClusters, 5000);
+    const id2 = setInterval(fetchJobs, 5000);
+    return () => {
+      clearInterval(id1);
+      clearInterval(id2);
+    };
   }, []);
 
   const chartData = {
@@ -72,6 +84,31 @@ function ClusterManagement() {
                   <td>{c.gpu}</td>
                   <td>{c.status}</td>
                   <td>{c.uptime}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </CardBody>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle tag="h4">Recent Cluster Jobs</CardTitle>
+        </CardHeader>
+        <CardBody>
+          <Table responsive>
+            <thead className="text-primary">
+              <tr>
+                <th>Job</th>
+                <th>Cluster</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {jobs.map((j, idx) => (
+                <tr key={idx}>
+                  <td>{j.name}</td>
+                  <td>{j.cluster}</td>
+                  <td>{j.status}</td>
                 </tr>
               ))}
             </tbody>

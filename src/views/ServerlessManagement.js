@@ -10,6 +10,7 @@ const chartOptions = {
 
 function ServerlessManagement() {
   const [endpoints, setEndpoints] = useState([]);
+  const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
     const fetchEndpoints = () => {
@@ -18,9 +19,20 @@ function ServerlessManagement() {
         .then((data) => setEndpoints(data))
         .catch(() => setEndpoints([]));
     };
+    const fetchJobs = () => {
+      fetch("/api/serverless_jobs")
+        .then((res) => res.json())
+        .then((data) => setJobs(data))
+        .catch(() => setJobs([]));
+    };
     fetchEndpoints();
-    const id = setInterval(fetchEndpoints, 5000);
-    return () => clearInterval(id);
+    fetchJobs();
+    const id1 = setInterval(fetchEndpoints, 5000);
+    const id2 = setInterval(fetchJobs, 5000);
+    return () => {
+      clearInterval(id1);
+      clearInterval(id2);
+    };
   }, []);
 
   const chartData = {
@@ -68,6 +80,31 @@ function ServerlessManagement() {
                   <td>{e.name}</td>
                   <td>{e.status}</td>
                   <td>{e.requests}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </CardBody>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle tag="h4">Recent Serverless Jobs</CardTitle>
+        </CardHeader>
+        <CardBody>
+          <Table responsive>
+            <thead className="text-primary">
+              <tr>
+                <th>Job</th>
+                <th>Endpoint</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {jobs.map((j, idx) => (
+                <tr key={idx}>
+                  <td>{j.name}</td>
+                  <td>{j.endpoint}</td>
+                  <td>{j.status}</td>
                 </tr>
               ))}
             </tbody>
