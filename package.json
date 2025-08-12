@@ -3,6 +3,7 @@
   "version": "1.2.2",
   "private": true,
   "homepage": "https://demos.creative-tim.com/black-dashboard-react/#/admin/dashboard",
+  "packageManager": "bun@1.2.14",
   "dependencies": {
     "@fortawesome/fontawesome-free": "6.4.0",
     "ajv": "^8.16.0",
@@ -19,14 +20,14 @@
     "sass": "1.62.1"
   },
   "scripts": {
-    "dev": "vite",
-    "start": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "test": "vitest run --passWithNoTests",
-    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm run dev",
-    "compile-scss": "sass src/assets/scss/black-dashboard-react.scss src/assets/css/black-dashboard-react.css",
-    "minify-scss": "sass src/assets/scss/black-dashboard-react.scss src/assets/css/black-dashboard-react.min.css --style compressed"
+    "dev": "bunx vite",
+    "start": "bunx vite",
+    "build": "bunx vite build",
+    "preview": "bunx vite preview",
+    "test": "bunx vitest run --passWithNoTests",
+    "install:clean": "rm -rf node_modules/ && rm -f bun.lockb && bun install && bun run dev",
+    "compile-scss": "bunx sass src/assets/scss/black-dashboard-react.scss src/assets/css/black-dashboard-react.css",
+    "minify-scss": "bunx sass src/assets/scss/black-dashboard-react.scss src/assets/css/black-dashboard-react.min.css --style compressed"
   },
   "eslintConfig": {
     "extends": "react-app"
