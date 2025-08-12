@@ -68,7 +68,8 @@ function UserManagement() {
             </thead>
             <tbody>
               {users.map((u, idx) => (
-                <tr key={idx}>
+              {users.map((u) => (
+                <tr key={u.id}>
                   <td>{u.name}</td>
                   <td>{u.role}</td>
                   <td>{u.apiKey}</td>
