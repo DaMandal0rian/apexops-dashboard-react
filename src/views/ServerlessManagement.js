@@ -101,7 +101,7 @@ function ServerlessManagement() {
             </thead>
             <tbody>
               {jobs.map((j, idx) => (
-                <tr key={idx}>
+                <tr key={j.name}>
                   <td>{j.name}</td>
                   <td>{j.endpoint}</td>
                   <td>{j.status}</td>
