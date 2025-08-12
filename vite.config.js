@@ -4,15 +4,18 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   plugins: [react(), tsconfigPaths({ ignoreConfigErrors: true })],
-  // Treat JSX in .js files so legacy components compile
+  // Treat JSX in both legacy .js files and modern .jsx modules
   esbuild: {
     loader: 'jsx',
-    include: /src\/.*\.js$/,
+    include: /src\/.*\.(js|jsx)$/,
+    jsx: 'automatic',
   },
   optimizeDeps: {
     esbuildOptions: {
+      jsx: 'automatic',
       loader: {
         '.js': 'jsx',
+        '.jsx': 'jsx',
       },
     },
   },
