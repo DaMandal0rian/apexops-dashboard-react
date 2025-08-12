@@ -66,7 +66,7 @@ This project now uses [Bun](https://bun.sh) for package management and scripts.
 
 ```bash
 bun install
-bun run dev
+bun run start
 ```
 
 ## Deploy
