@@ -60,6 +60,15 @@ Quick start options:
 - [Download from Github](https://github.com/creativetimofficial/black-dashboard-react/archive/master.zip).
 - [Download from Creative Tim](https://www.creative-tim.com/product/black-dashboard-react).
 
+### Development with Bun
+
+This project now uses [Bun](https://bun.sh) for package management and scripts.
+
+```bash
+bun install
+bun run start
+```
+
 ## Deploy
 
 :rocket: You can deploy your own version of the template to Genezio with one click:
