@@ -1,4 +1,13 @@
 import React, { useEffect, useState } from "react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import { Bar } from "react-chartjs-2";
 import {
   Card,
@@ -8,6 +17,8 @@ import {
   Row,
   Col,
 } from "reactstrap";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const chartOptions = {
   responsive: true,
