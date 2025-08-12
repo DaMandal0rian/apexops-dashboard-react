@@ -1,22 +1,29 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  plugins: [react(), tsconfigPaths({ ignoreConfigErrors: true })],
-  // Treat JSX in both legacy .js files and modern .jsx modules
+  plugins: [react()],
+  resolve: {
+    alias: {
+      assets: path.resolve(__dirname, 'src/assets'),
+      components: path.resolve(__dirname, 'src/components'),
+      contexts: path.resolve(__dirname, 'src/contexts'),
+      layouts: path.resolve(__dirname, 'src/layouts'),
+      views: path.resolve(__dirname, 'src/views'),
+    },
+  },
   esbuild: {
     loader: 'jsx',
-    include: /src\/.*\.(js|jsx)$/,
     jsx: 'automatic',
   },
   optimizeDeps: {
     esbuildOptions: {
+      loader: { '.js': 'jsx', '.jsx': 'jsx' },
       jsx: 'automatic',
-      loader: {
-        '.js': 'jsx',
-        '.jsx': 'jsx',
-      },
     },
   },
   build: {
