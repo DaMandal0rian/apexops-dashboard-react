@@ -8,6 +8,24 @@ Preferred communication style: Simple, everyday language.
 
 # Recent Changes
 
+## August 12, 2025
+- **OAuth Redirect Configuration**: Updated all OAuth callbacks (Replit, GitHub, Google) to redirect to `https://apexops.blockmindlabs.ai/admin/dashboard` after successful authentication
+- **Landing Page Button Updates**: Changed button text from "Get Started" to "Login" and "Login & Register" for clearer user guidance
+- **Routing Structure Finalized**: Landing page remains at root `/`, all admin functionality moved to `/admin/*` routes with proper authentication flow
+- **Production Deployment Fixes**: Applied comprehensive deployment fixes to resolve production server issues
+  - Fixed environment variable detection by changing from `app.get("env")` to `process.env.NODE_ENV` in server startup logic
+  - Added `/health` endpoint for deployment verification with uptime, timestamp, and environment status
+  - Implemented post-build static file copying to ensure serveStatic function can locate built assets in production
+  - Created post-build.sh script for automated static file deployment setup
+  - Verified production server serves static files correctly and health endpoint responds with JSON
+- **Custom Domain Configuration**: Updated OAuth callbacks to use custom domain `apexops.blockmindlabs.ai`
+- **OAuth Authentication Setup**: Fixed GitHub and Google OAuth callback URLs to use full domain paths
+- **Authentication Issues Resolved**: Updated OAuth strategies to include proper redirect URIs with domain
+- **OAuth Setup Instructions**: Created detailed configuration guide for GitHub and Google OAuth applications
+- **Landing Page Authentication**: Enhanced with multiple OAuth provider login options (Replit, GitHub, Google)
+- **Mobile Responsive Fixes**: Completed comprehensive mobile optimization for alerts and data lineage pages
+- **Table Responsive Design**: Added horizontal scrolling and column hiding for mobile data catalog tables
+
 ## January 12, 2025
 - Added comprehensive Alerts & Notifications section with real-time alert management
 - Implemented Data Lineage & Tracing with animated dataset graphs for pipeline visualization
@@ -23,6 +41,14 @@ Preferred communication style: Simple, everyday language.
   - Added orbital animation system for AI Gateway routing visualization
   - Created random GPU activation patterns with data flow line animations
   - Enhanced visual hierarchy with improved typography and gradient text effects
+- **Mobile-Responsive Dashboard Enhancement:**
+  - Created comprehensive mobile navigation component with hamburger menu and overlay
+  - Updated all dashboard pages to be mobile-friendly with responsive layouts
+  - Added responsive breakpoints and mobile-optimized padding throughout
+  - Fixed desktop sidebar to hide on mobile screens and show mobile navigation instead
+  - Enhanced landing page typography and spacing for mobile/tablet devices
+  - Implemented responsive grid systems across all dashboard sections
+  - Fixed TypeScript type safety issues with array handling in data queries
 
 # System Architecture
 
@@ -78,10 +104,18 @@ Database schema includes tables for:
 
 ## Authentication and Authorization
 
-The current implementation includes basic user management with:
-- User creation and retrieval by username/ID
-- Session-based authentication using connect-pg-simple for PostgreSQL session storage
-- Planned integration with secure authentication providers
+The application supports multiple OAuth providers with comprehensive authentication:
+- **Replit OAuth**: Primary authentication using OpenID Connect
+- **GitHub OAuth**: Secondary authentication with GitHub accounts
+- **Google OAuth**: Secondary authentication with Google accounts
+- **Session Management**: PostgreSQL-based session storage using connect-pg-simple
+- **User Management**: Unified user storage supporting all authentication providers
+- **Automatic User Sync**: User data synchronization across different OAuth providers
+
+### OAuth Configuration Requirements:
+- GitHub: Callback URL configured for `https://apexops.blockmindlabs.ai/api/auth/github/callback`
+- Google: Redirect URI configured for `https://apexops.blockmindlabs.ai/api/auth/google/callback`
+- Replit: Callback URL uses original Replit domain for development compatibility
 
 ## Real-time Communication
 

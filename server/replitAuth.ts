@@ -127,10 +127,12 @@ export async function setupAuth(app: Express) {
 
   // GitHub OAuth Strategy
   if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
+    const customDomain = "apexops.blockmindlabs.ai";
+    
     passport.use(new GitHubStrategy({
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "/api/auth/github/callback"
+      callbackURL: `https://${customDomain}/api/auth/github/callback`
     },
     async (accessToken: string, refreshToken: string, profile: any, done: any) => {
       try {
@@ -145,10 +147,12 @@ export async function setupAuth(app: Express) {
 
   // Google OAuth Strategy
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    const customDomain = "apexops.blockmindlabs.ai";
+    
     passport.use(new GoogleStrategy({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/api/auth/google/callback"
+      callbackURL: `https://${customDomain}/api/auth/google/callback`
     },
     async (accessToken: string, refreshToken: string, profile: any, done: any) => {
       try {
@@ -174,7 +178,7 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/callback", (req, res, next) => {
     passport.authenticate(`replitauth:${req.hostname}`, {
-      successReturnToOrRedirect: "/",
+      successReturnToOrRedirect: "https://apexops.blockmindlabs.ai/admin/dashboard",
       failureRedirect: "/api/login",
     })(req, res, next);
   });
@@ -187,7 +191,7 @@ export async function setupAuth(app: Express) {
   app.get("/api/auth/github/callback",
     passport.authenticate("github", { failureRedirect: "/" }),
     (req, res) => {
-      res.redirect("/");
+      res.redirect("https://apexops.blockmindlabs.ai/admin/dashboard");
     }
   );
 
@@ -199,7 +203,7 @@ export async function setupAuth(app: Express) {
   app.get("/api/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "/" }),
     (req, res) => {
-      res.redirect("/");
+      res.redirect("https://apexops.blockmindlabs.ai/admin/dashboard");
     }
   );
 

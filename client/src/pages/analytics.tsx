@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { Header } from "@/components/dashboard/header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -79,11 +80,12 @@ export default function Analytics() {
   return (
     <div className="min-h-screen bg-dark-900 text-gray-100">
       <Sidebar />
+      <MobileNav />
       
-      <div className="ml-64 min-h-screen">
+      <div className="md:ml-64 min-h-screen">
         <Header />
         
-        <main className="p-6">
+        <main className="p-4 md:p-6">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-3xl font-bold text-white">Analytics</h1>

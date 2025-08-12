@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+// Temporarily disable auth check to fix infinite loop
+// import { useAuth } from "@/hooks/useAuth";
 import { 
   Bot, 
   Cpu, 
@@ -18,6 +20,9 @@ import {
 } from "lucide-react";
 
 export default function Landing() {
+  // Temporarily disable auth check to fix infinite loop
+  const isAuthenticated = false; // const { isAuthenticated } = useAuth();
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-gray-100 font-inter antialiased overflow-hidden">
       {/* Animated Background Elements */}
@@ -45,7 +50,7 @@ export default function Landing() {
 
       {/* Header */}
       <header className="relative z-10 border-b border-slate-800/50 bg-slate-950/80 backdrop-blur-xl">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-4 md:px-6 py-3 md:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               {/* Sophisticated Logo */}
@@ -152,32 +157,41 @@ export default function Landing() {
               <a href="#docs" className="text-gray-300 hover:text-cyan-400 transition-colors duration-300">Documentation</a>
             </nav>
             
-            <Button 
-              onClick={() => window.location.href = '/api/login'} 
-              className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white border-0 shadow-lg shadow-cyan-500/25 transition-all duration-300"
-            >
-              Get Started
-            </Button>
+            {isAuthenticated ? (
+              <Button 
+                onClick={() => window.location.href = '/admin/dashboard'} 
+                className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0 shadow-lg shadow-green-500/25 transition-all duration-300"
+              >
+                Dashboard
+              </Button>
+            ) : (
+              <Button 
+                onClick={() => window.location.href = '/api/login'} 
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white border-0 shadow-lg shadow-cyan-500/25 transition-all duration-300"
+              >
+                Login
+              </Button>
+            )}
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-40 overflow-hidden">
-        <div className="container mx-auto px-6 relative z-10">
+      <section className="relative pt-20 md:pt-32 pb-20 md:pb-40 overflow-hidden">
+        <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="text-center max-w-5xl mx-auto">
             <div className="inline-flex items-center space-x-2 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-full px-6 py-3 mb-8">
               <Zap className="h-4 w-4 text-cyan-400" />
               <span className="text-sm font-medium text-gray-300">Enterprise-Grade AI Platform Management</span>
             </div>
             
-            <h1 className="text-6xl md:text-7xl font-bold mb-8 leading-tight tracking-tight relative">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 leading-tight tracking-tight relative">
               <span className="block text-white mb-2 relative z-10 drop-shadow-lg">AI Infrastructure Solutions</span>
               <span className="block text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text relative z-10 drop-shadow-lg">
                 & Services
               </span>
               {/* Dramatic text glow effect */}
-              <div className="absolute inset-0 text-6xl md:text-7xl font-bold leading-tight tracking-tight opacity-25 blur-lg">
+              <div className="absolute inset-0 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight opacity-25 blur-lg">
                 <span className="block text-cyan-400 mb-2">AI Infrastructure Solutions</span>
                 <span className="block text-blue-500">
                   & Services
@@ -185,21 +199,32 @@ export default function Landing() {
               </div>
             </h1>
             
-            <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl lg:text-2xl text-gray-300 mb-8 md:mb-12 max-w-4xl mx-auto leading-relaxed px-4 md:px-0">
               Comprehensive AI infrastructure solutions including intelligent management systems, real-time 
               data aggregation, multi-provider AI routing, and autonomous agent orchestration 
               designed for enterprise scalability and reliability.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-              <Button 
-                size="lg" 
-                onClick={() => window.location.href = '/api/login'}
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-10 py-4 text-lg font-semibold border-0 shadow-xl shadow-cyan-500/25 transition-all duration-300 hover:shadow-cyan-500/40 hover:scale-105"
-              >
-                Start Free Trial
-                <ArrowRight className="ml-3 h-5 w-5" />
-              </Button>
+            <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center mb-12 md:mb-16">
+              {isAuthenticated ? (
+                <Button 
+                  size="lg" 
+                  onClick={() => window.location.href = '/admin/dashboard'}
+                  className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-10 py-4 text-lg font-semibold border-0 shadow-xl shadow-green-500/25 transition-all duration-300 hover:shadow-green-500/40 hover:scale-105"
+                >
+                  Go to Dashboard
+                  <ArrowRight className="ml-3 h-5 w-5" />
+                </Button>
+              ) : (
+                <Button 
+                  size="lg" 
+                  onClick={() => window.location.href = '/api/login'}
+                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-10 py-4 text-lg font-semibold border-0 shadow-xl shadow-cyan-500/25 transition-all duration-300 hover:shadow-cyan-500/40 hover:scale-105"
+                >
+                  Login & Register
+                  <ArrowRight className="ml-3 h-5 w-5" />
+                </Button>
+              )}
               <Button 
                 size="lg" 
                 variant="outline" 
@@ -209,33 +234,35 @@ export default function Landing() {
               </Button>
             </div>
             
-            {/* OAuth Login Options */}
-            <div className="flex flex-wrap justify-center gap-4 max-w-md mx-auto">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = '/api/login'}
-                className="border-slate-600 bg-slate-800/30 backdrop-blur-sm text-gray-300 hover:bg-slate-700/50 hover:border-cyan-400/50 px-6 py-2 transition-all duration-300"
-              >
-                Continue with Replit
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = '/api/auth/github'}
-                className="border-slate-600 bg-slate-800/30 backdrop-blur-sm text-gray-300 hover:bg-slate-700/50 hover:border-purple-400/50 px-6 py-2 transition-all duration-300"
-              >
-                Sign in with GitHub
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = '/api/auth/google'}
-                className="border-slate-600 bg-slate-800/30 backdrop-blur-sm text-gray-300 hover:bg-slate-700/50 hover:border-red-400/50 px-6 py-2 transition-all duration-300"
-              >
-                Sign in with Google
-              </Button>
-            </div>
+            {/* OAuth Login Options - Only show for unauthenticated users */}
+            {!isAuthenticated && (
+              <div className="flex flex-wrap justify-center gap-4 max-w-md mx-auto">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => window.location.href = '/api/login'}
+                  className="border-slate-600 bg-slate-800/30 backdrop-blur-sm text-gray-300 hover:bg-slate-700/50 hover:border-cyan-400/50 px-6 py-2 transition-all duration-300"
+                >
+                  Continue with Replit
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => window.location.href = '/api/auth/github'}
+                  className="border-slate-600 bg-slate-800/30 backdrop-blur-sm text-gray-300 hover:bg-slate-700/50 hover:border-purple-400/50 px-6 py-2 transition-all duration-300"
+                >
+                  Sign in with GitHub
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => window.location.href = '/api/auth/google'}
+                  className="border-slate-600 bg-slate-800/30 backdrop-blur-sm text-gray-300 hover:bg-slate-700/50 hover:border-red-400/50 px-6 py-2 transition-all duration-300"
+                >
+                  Sign in with Google
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -665,14 +692,25 @@ export default function Landing() {
               Join leading enterprises using ApexOps to scale their AI operations with 
               intelligent automation and enterprise-grade reliability.
             </p>
-            <Button 
-              size="lg" 
-              onClick={() => window.location.href = '/api/login'}
-              className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-12 py-4 text-lg font-semibold border-0 shadow-xl shadow-cyan-500/25 transition-all duration-300 hover:shadow-cyan-500/40 hover:scale-105"
-            >
-              Start Your Journey Today
-              <ArrowRight className="ml-3 h-5 w-5" />
-            </Button>
+            {isAuthenticated ? (
+              <Button 
+                size="lg" 
+                onClick={() => window.location.href = '/admin/dashboard'}
+                className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-12 py-4 text-lg font-semibold border-0 shadow-xl shadow-green-500/25 transition-all duration-300 hover:shadow-green-500/40 hover:scale-105"
+              >
+                Access Your Dashboard
+                <ArrowRight className="ml-3 h-5 w-5" />
+              </Button>
+            ) : (
+              <Button 
+                size="lg" 
+                onClick={() => window.location.href = '/api/login'}
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-12 py-4 text-lg font-semibold border-0 shadow-xl shadow-cyan-500/25 transition-all duration-300 hover:shadow-cyan-500/40 hover:scale-105"
+              >
+                Login & Register
+                <ArrowRight className="ml-3 h-5 w-5" />
+              </Button>
+            )}
           </div>
         </div>
       </section>

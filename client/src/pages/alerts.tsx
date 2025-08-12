@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { Header } from "@/components/dashboard/header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -169,72 +170,73 @@ export default function Alerts() {
   return (
     <div className="min-h-screen bg-dark-900 text-gray-100 font-inter antialiased">
       <Sidebar />
+      <MobileNav />
       
-      <div className="ml-64 min-h-screen">
+      <div className="md:ml-64 min-h-screen">
         <Header />
         
-        <main className="p-6">
+        <main className="p-4 md:p-6">
           <div className="mb-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-white flex items-center">
-                  <Bell className="h-6 w-6 mr-3 text-cyan-400" />
+                <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center">
+                  <Bell className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3 text-cyan-400" />
                   Alerts & Notifications
                 </h1>
-                <p className="text-gray-400 mt-1">Monitor system alerts and manage notifications</p>
+                <p className="text-gray-400 mt-1 text-sm sm:text-base">Monitor system alerts and manage notifications</p>
               </div>
-              <Button className="bg-cyan-600 hover:bg-cyan-700">
+              <Button className="bg-cyan-600 hover:bg-cyan-700 w-full sm:w-auto">
                 <Plus className="h-4 w-4 mr-2" />
                 Create Alert Rule
               </Button>
             </div>
 
             {/* Alert Statistics */}
-            <div className="grid grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
               <Card className="bg-dark-800 border-gray-700">
-                <CardContent className="p-4">
+                <CardContent className="p-3 sm:p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gray-400 text-sm">Total Alerts</p>
-                      <p className="text-2xl font-bold text-white">{alertStats.total}</p>
+                      <p className="text-gray-400 text-xs sm:text-sm">Total Alerts</p>
+                      <p className="text-xl sm:text-2xl font-bold text-white">{alertStats.total}</p>
                     </div>
-                    <Bell className="h-8 w-8 text-gray-400" />
+                    <Bell className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
                   </div>
                 </CardContent>
               </Card>
               
               <Card className="bg-dark-800 border-gray-700">
-                <CardContent className="p-4">
+                <CardContent className="p-3 sm:p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gray-400 text-sm">Unread</p>
-                      <p className="text-2xl font-bold text-yellow-400">{alertStats.unread}</p>
+                      <p className="text-gray-400 text-xs sm:text-sm">Unread</p>
+                      <p className="text-xl sm:text-2xl font-bold text-yellow-400">{alertStats.unread}</p>
                     </div>
-                    <BellRing className="h-8 w-8 text-yellow-400" />
+                    <BellRing className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-400" />
                   </div>
                 </CardContent>
               </Card>
               
               <Card className="bg-dark-800 border-gray-700">
-                <CardContent className="p-4">
+                <CardContent className="p-3 sm:p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gray-400 text-sm">Critical</p>
-                      <p className="text-2xl font-bold text-red-400">{alertStats.critical}</p>
+                      <p className="text-gray-400 text-xs sm:text-sm">Critical</p>
+                      <p className="text-xl sm:text-2xl font-bold text-red-400">{alertStats.critical}</p>
                     </div>
-                    <AlertTriangle className="h-8 w-8 text-red-400" />
+                    <AlertTriangle className="h-6 w-6 sm:h-8 sm:w-8 text-red-400" />
                   </div>
                 </CardContent>
               </Card>
               
               <Card className="bg-dark-800 border-gray-700">
-                <CardContent className="p-4">
+                <CardContent className="p-3 sm:p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gray-400 text-sm">Acknowledged</p>
-                      <p className="text-2xl font-bold text-green-400">{alertStats.acknowledged}</p>
+                      <p className="text-gray-400 text-xs sm:text-sm">Acknowledged</p>
+                      <p className="text-xl sm:text-2xl font-bold text-green-400">{alertStats.acknowledged}</p>
                     </div>
-                    <CheckCircle className="h-8 w-8 text-green-400" />
+                    <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-400" />
                   </div>
                 </CardContent>
               </Card>
@@ -251,12 +253,12 @@ export default function Alerts() {
             <TabsContent value="alerts" className="space-y-6">
               {/* Filters and Search */}
               <Card className="bg-dark-800 border-gray-700">
-                <CardContent className="p-4">
-                  <div className="flex items-center space-x-4">
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
                     <div className="flex items-center space-x-2">
                       <Filter className="h-4 w-4 text-gray-400" />
                       <Select value={filter} onValueChange={setFilter}>
-                        <SelectTrigger className="w-32 bg-dark-700 border-gray-600">
+                        <SelectTrigger className="w-full sm:w-32 bg-dark-700 border-gray-600">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -272,7 +274,7 @@ export default function Alerts() {
                       placeholder="Search alerts..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="max-w-sm bg-dark-700 border-gray-600"
+                      className="w-full sm:max-w-sm bg-dark-700 border-gray-600"
                     />
                   </div>
                 </CardContent>

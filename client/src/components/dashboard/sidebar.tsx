@@ -15,19 +15,19 @@ export function Sidebar() {
   const [location] = useLocation();
 
   const navigation = [
-    { name: "Dashboard", href: "/dashboard", icon: Home },
-    { name: "AI Agents", href: "/agents", icon: Bot },
-    { name: "GPU Resources", href: "/gpu-resources", icon: Cpu },
-    { name: "Analytics", href: "/analytics", icon: BarChart3 },
-    { name: "Performance", href: "/performance", icon: Activity },
-    { name: "Cost Management", href: "/costs", icon: DollarSign },
-    { name: "Alerts", href: "/alerts", icon: Bell },
-    { name: "Data Lineage", href: "/lineage", icon: GitBranch },
+    { name: "Dashboard", href: "/admin/dashboard", icon: Home },
+    { name: "AI Agents", href: "/admin/agents", icon: Bot },
+    { name: "GPU Resources", href: "/admin/gpu-resources", icon: Cpu },
+    { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+    { name: "Performance", href: "/admin/performance", icon: Activity },
+    { name: "Cost Management", href: "/admin/costs", icon: DollarSign },
+    { name: "Alerts", href: "/admin/alerts", icon: Bell },
+    { name: "Data Lineage", href: "/admin/lineage", icon: GitBranch },
   ];
 
   return (
-    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-dark-800 border-r border-gray-700">
-      <div className="flex h-16 items-center px-6 border-b border-gray-700">
+    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-dark-800 border-r border-gray-700 md:block hidden">
+      <div className="flex h-16 items-center px-4 md:px-6 border-b border-gray-700">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
             <Bot className="h-5 w-5 text-white" />
@@ -43,10 +43,10 @@ export function Sidebar() {
         </div>
       </div>
 
-      <nav className="mt-8 px-4">
+      <nav className="mt-8 px-2 md:px-4">
         <ul className="space-y-2">
           {navigation.map((item) => {
-            const isActive = location === item.href || (item.href === "/dashboard" && location === "/");
+            const isActive = location === item.href || (item.href === "/admin/dashboard" && (location === "/admin" || location === "/admin/"));
             return (
               <li key={item.name}>
                 <Link

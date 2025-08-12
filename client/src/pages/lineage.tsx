@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { Header } from "@/components/dashboard/header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,9 @@ import {
   Zap,
   FileText,
   Filter,
-  Search
+  Search,
+  Activity,
+  X
 } from "lucide-react";
 
 interface DataNode {
@@ -317,24 +320,25 @@ export default function DataLineage() {
   return (
     <div className="min-h-screen bg-dark-900 text-gray-100 font-inter antialiased">
       <Sidebar />
+      <MobileNav />
       
-      <div className="ml-64 min-h-screen">
+      <div className="md:ml-64 min-h-screen">
         <Header />
         
-        <main className="p-6">
+        <main className="p-4 md:p-6">
           <div className="mb-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-4 gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-white flex items-center">
-                  <GitBranch className="h-6 w-6 mr-3 text-cyan-400" />
+                <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center">
+                  <GitBranch className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3 text-cyan-400" />
                   Data Lineage & Tracing
                 </h1>
-                <p className="text-gray-400 mt-1">Track data flow and dependencies across your AI pipeline</p>
+                <p className="text-gray-400 mt-1 text-sm sm:text-base">Track data flow and dependencies across your AI pipeline</p>
               </div>
               
-              <div className="flex items-center space-x-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
                 <Select value={selectedTimeRange} onValueChange={setSelectedTimeRange}>
-                  <SelectTrigger className="w-32 bg-dark-800 border-gray-600">
+                  <SelectTrigger className="w-full sm:w-32 bg-dark-800 border-gray-600">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -348,13 +352,13 @@ export default function DataLineage() {
                 <Button 
                   variant="outline" 
                   onClick={toggleAnimation}
-                  className="border-gray-600"
+                  className="border-gray-600 w-full sm:w-auto"
                 >
                   {isAnimationPlaying ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
                   {isAnimationPlaying ? "Pause" : "Play"}
                 </Button>
                 
-                <Button className="bg-cyan-600 hover:bg-cyan-700">
+                <Button className="bg-cyan-600 hover:bg-cyan-700 w-full sm:w-auto">
                   <RotateCcw className="h-4 w-4 mr-2" />
                   Refresh
                 </Button>
@@ -363,162 +367,187 @@ export default function DataLineage() {
           </div>
 
           <Tabs defaultValue="graph" className="space-y-6">
-            <TabsList className="bg-dark-800">
-              <TabsTrigger value="graph">Lineage Graph</TabsTrigger>
-              <TabsTrigger value="table">Data Catalog</TabsTrigger>
-              <TabsTrigger value="metrics">Flow Metrics</TabsTrigger>
+            <TabsList className="bg-dark-800 w-full justify-start overflow-x-auto">
+              <TabsTrigger value="graph" className="whitespace-nowrap">Lineage Graph</TabsTrigger>
+              <TabsTrigger value="table" className="whitespace-nowrap">Data Catalog</TabsTrigger>
+              <TabsTrigger value="metrics" className="whitespace-nowrap">Flow Metrics</TabsTrigger>
             </TabsList>
 
             <TabsContent value="graph" className="space-y-6">
-              <div className="grid grid-cols-12 gap-6">
-                {/* Main Lineage Visualization */}
-                <div className="col-span-9">
-                  <Card className="bg-dark-800 border-gray-700">
-                    <CardHeader>
+              {/* Node Details Panel - Top Wide Layout */}
+              {selectedNode && (
+                <Card className="bg-dark-800 border-gray-700">
+                  <CardHeader className="pb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-center space-x-3">
+                        {getNodeIcon(selectedNode.type)}
+                        <div>
+                          <CardTitle className="text-white text-lg">{selectedNode.name}</CardTitle>
+                          <Badge 
+                            className="mt-1 text-xs"
+                            style={{ backgroundColor: getNodeColor(selectedNode.type, selectedNode.status) }}
+                          >
+                            {selectedNode.type}
+                          </Badge>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedNode(null)}
+                        className="text-gray-400 hover:text-white"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-sm">
+                      <div>
+                        <span className="text-gray-400 block">Status</span>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <div 
+                            className={`w-2 h-2 rounded-full ${
+                              selectedNode.status === 'active' ? 'bg-green-400' :
+                              selectedNode.status === 'processing' ? 'bg-yellow-400 animate-pulse' :
+                              selectedNode.status === 'error' ? 'bg-red-400' : 'bg-gray-400'
+                            }`}
+                          />
+                          <span className="text-white capitalize">{selectedNode.status}</span>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <span className="text-gray-400 block">Last Updated</span>
+                        <span className="text-white mt-1 block">{selectedNode.metadata.lastUpdated}</span>
+                      </div>
+                      
+                      {selectedNode.metadata.recordCount && (
+                        <div>
+                          <span className="text-gray-400 block">Records</span>
+                          <span className="text-white mt-1 block">{selectedNode.metadata.recordCount.toLocaleString()}</span>
+                        </div>
+                      )}
+                      
+                      {selectedNode.metadata.size && (
+                        <div>
+                          <span className="text-gray-400 block">Size</span>
+                          <span className="text-white mt-1 block">{selectedNode.metadata.size}</span>
+                        </div>
+                      )}
+                      
+                      <div>
+                        <span className="text-gray-400 block">Format</span>
+                        <span className="text-white mt-1 block">{selectedNode.metadata.format}</span>
+                      </div>
+                      
+                      <div>
+                        <span className="text-gray-400 block">Owner</span>
+                        <span className="text-white mt-1 block">{selectedNode.metadata.owner}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Full Width Data Flow Visualization */}
+              <Card className="bg-dark-800 border-gray-700">
+                <CardHeader>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
                       <CardTitle className="text-white">Data Flow Visualization</CardTitle>
                       <CardDescription className="text-gray-400">
                         Interactive graph showing data movement and transformations
                       </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="relative">
-                        <canvas 
-                          ref={canvasRef}
-                          className="absolute inset-0 w-full h-96"
-                          style={{ background: 'transparent' }}
-                        />
-                        
-                        {/* Node overlays */}
-                        <div className="relative w-full h-96">
-                          {mockNodes.map((node) => (
-                            <div
-                              key={node.id}
-                              className="absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2"
-                              style={{
-                                left: node.position.x,
-                                top: node.position.y,
-                              }}
-                              onClick={() => setSelectedNode(node)}
-                            >
-                              <div 
-                                className={`p-3 rounded-lg border-2 bg-dark-800 hover:bg-dark-700 transition-colors ${
-                                  selectedNode?.id === node.id ? 'border-cyan-500' : 'border-gray-600'
-                                }`}
-                                style={{ borderColor: getNodeColor(node.type, node.status) }}
-                              >
-                                <div className="flex items-center space-x-2 text-white">
-                                  {getNodeIcon(node.type)}
-                                  <span className="text-sm font-medium">{node.name}</span>
-                                </div>
-                                <div className="flex items-center mt-1">
+                    </div>
+                    {!selectedNode && (
+                      <div className="text-sm text-gray-400 bg-dark-700/50 px-3 py-2 rounded-lg border border-gray-600/50">
+                        <GitBranch className="h-4 w-4 inline mr-2" />
+                        Click any node to view details
+                      </div>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="relative">
+                    <canvas 
+                      ref={canvasRef}
+                      className="absolute inset-0 w-full h-[600px]"
+                      style={{ background: 'transparent' }}
+                    />
+                    
+                    {/* Node overlays */}
+                    <div className="relative w-full h-[600px]">
+                      {mockNodes.map((node) => (
+                        <div
+                          key={node.id}
+                          className="absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 transition-all duration-200 hover:scale-105"
+                          style={{
+                            left: node.position.x,
+                            top: node.position.y,
+                          }}
+                          onClick={() => setSelectedNode(node)}
+                        >
+                          <div 
+                            className={`p-4 rounded-xl border-2 bg-dark-800/90 backdrop-blur-sm hover:bg-dark-700/90 transition-all duration-200 shadow-lg ${
+                              selectedNode?.id === node.id 
+                                ? 'border-cyan-500 shadow-cyan-500/25 scale-105' 
+                                : 'border-gray-600 hover:border-gray-500'
+                            }`}
+                            style={{ 
+                              borderColor: selectedNode?.id === node.id ? '#06b6d4' : getNodeColor(node.type, node.status),
+                              boxShadow: selectedNode?.id === node.id 
+                                ? `0 8px 32px ${getNodeColor(node.type, node.status)}40`
+                                : `0 4px 16px ${getNodeColor(node.type, node.status)}20`
+                            }}
+                          >
+                            <div className="flex items-center space-x-3 text-white">
+                              <div className="flex-shrink-0">
+                                {getNodeIcon(node.type)}
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-sm font-medium truncate">{node.name}</div>
+                                <div className="flex items-center mt-1 space-x-2">
                                   <div 
-                                    className={`w-2 h-2 rounded-full mr-2 ${
+                                    className={`w-2 h-2 rounded-full ${
                                       node.status === 'active' ? 'bg-green-400' :
                                       node.status === 'processing' ? 'bg-yellow-400 animate-pulse' :
                                       node.status === 'error' ? 'bg-red-400' : 'bg-gray-400'
                                     }`}
                                   />
-                                  <span className="text-xs text-gray-400 capitalize">{node.status}</span>
+                                  <span className="text-xs text-gray-300 capitalize">{node.status}</span>
                                 </div>
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Node Details Panel */}
-                <div className="col-span-3">
-                  <Card className="bg-dark-800 border-gray-700">
-                    <CardHeader>
-                      <CardTitle className="text-white">Node Details</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {selectedNode ? (
-                        <div className="space-y-4">
-                          <div>
-                            <h3 className="text-white font-medium flex items-center">
-                              {getNodeIcon(selectedNode.type)}
-                              <span className="ml-2">{selectedNode.name}</span>
-                            </h3>
-                            <Badge 
-                              className="mt-2 text-xs"
-                              style={{ backgroundColor: getNodeColor(selectedNode.type, selectedNode.status) }}
-                            >
-                              {selectedNode.type}
-                            </Badge>
-                          </div>
-                          
-                          <div className="space-y-2 text-sm">
-                            <div className="flex justify-between">
-                              <span className="text-gray-400">Status:</span>
-                              <span className="text-white capitalize">{selectedNode.status}</span>
-                            </div>
-                            
-                            <div className="flex justify-between">
-                              <span className="text-gray-400">Last Updated:</span>
-                              <span className="text-white">{selectedNode.metadata.lastUpdated}</span>
-                            </div>
-                            
-                            {selectedNode.metadata.recordCount && (
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Records:</span>
-                                <span className="text-white">{selectedNode.metadata.recordCount.toLocaleString()}</span>
-                              </div>
-                            )}
-                            
-                            {selectedNode.metadata.size && (
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Size:</span>
-                                <span className="text-white">{selectedNode.metadata.size}</span>
-                              </div>
-                            )}
-                            
-                            <div className="flex justify-between">
-                              <span className="text-gray-400">Format:</span>
-                              <span className="text-white">{selectedNode.metadata.format}</span>
-                            </div>
-                            
-                            <div className="flex justify-between">
-                              <span className="text-gray-400">Owner:</span>
-                              <span className="text-white">{selectedNode.metadata.owner}</span>
-                            </div>
                           </div>
                         </div>
-                      ) : (
-                        <div className="text-center py-8">
-                          <GitBranch className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                          <p className="text-gray-400">Select a node to view details</p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="table">
               <Card className="bg-dark-800 border-gray-700">
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div>
                       <CardTitle className="text-white">Data Catalog</CardTitle>
                       <CardDescription className="text-gray-400">
                         Complete inventory of data assets and their relationships
                       </CardDescription>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
                       <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                         <input
                           type="text"
                           placeholder="Search datasets..."
-                          className="pl-10 pr-4 py-2 bg-dark-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-500 focus:outline-none"
+                          className="w-full pl-10 pr-4 py-2 bg-dark-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-500 focus:outline-none"
                         />
                       </div>
-                      <Button variant="outline" size="sm" className="border-gray-600">
+                      <Button variant="outline" size="sm" className="border-gray-600 w-full sm:w-auto">
                         <Filter className="h-4 w-4 mr-2" />
                         Filter
                       </Button>
@@ -527,28 +556,28 @@ export default function DataLineage() {
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
+                    <table className="w-full text-sm min-w-[600px]">
                       <thead>
                         <tr className="border-b border-gray-700">
-                          <th className="text-left py-3 px-4 text-gray-400 font-medium">Dataset</th>
-                          <th className="text-left py-3 px-4 text-gray-400 font-medium">Type</th>
-                          <th className="text-left py-3 px-4 text-gray-400 font-medium">Status</th>
-                          <th className="text-left py-3 px-4 text-gray-400 font-medium">Records</th>
-                          <th className="text-left py-3 px-4 text-gray-400 font-medium">Size</th>
-                          <th className="text-left py-3 px-4 text-gray-400 font-medium">Owner</th>
-                          <th className="text-left py-3 px-4 text-gray-400 font-medium">Last Updated</th>
+                          <th className="text-left py-3 px-2 sm:px-4 text-gray-400 font-medium">Dataset</th>
+                          <th className="text-left py-3 px-2 sm:px-4 text-gray-400 font-medium">Type</th>
+                          <th className="text-left py-3 px-2 sm:px-4 text-gray-400 font-medium">Status</th>
+                          <th className="text-left py-3 px-2 sm:px-4 text-gray-400 font-medium hidden sm:table-cell">Records</th>
+                          <th className="text-left py-3 px-2 sm:px-4 text-gray-400 font-medium hidden md:table-cell">Size</th>
+                          <th className="text-left py-3 px-2 sm:px-4 text-gray-400 font-medium hidden lg:table-cell">Owner</th>
+                          <th className="text-left py-3 px-2 sm:px-4 text-gray-400 font-medium hidden lg:table-cell">Last Updated</th>
                         </tr>
                       </thead>
                       <tbody>
                         {mockNodes.map((node) => (
                           <tr key={node.id} className="border-b border-gray-700/50 hover:bg-dark-700/30">
-                            <td className="py-3 px-4">
-                              <div className="flex items-center space-x-3">
+                            <td className="py-3 px-2 sm:px-4">
+                              <div className="flex items-center space-x-2 sm:space-x-3">
                                 {getNodeIcon(node.type)}
-                                <span className="text-white font-medium">{node.name}</span>
+                                <span className="text-white font-medium text-sm">{node.name}</span>
                               </div>
                             </td>
-                            <td className="py-3 px-4">
+                            <td className="py-3 px-2 sm:px-4">
                               <Badge 
                                 className="text-xs"
                                 style={{ backgroundColor: getNodeColor(node.type, node.status) }}
@@ -556,7 +585,7 @@ export default function DataLineage() {
                                 {node.type}
                               </Badge>
                             </td>
-                            <td className="py-3 px-4">
+                            <td className="py-3 px-2 sm:px-4">
                               <div className="flex items-center space-x-2">
                                 <div 
                                   className={`w-2 h-2 rounded-full ${
@@ -565,15 +594,15 @@ export default function DataLineage() {
                                     node.status === 'error' ? 'bg-red-400' : 'bg-gray-400'
                                   }`}
                                 />
-                                <span className="text-gray-300 capitalize">{node.status}</span>
+                                <span className="text-gray-300 capitalize text-sm">{node.status}</span>
                               </div>
                             </td>
-                            <td className="py-3 px-4 text-gray-300">
+                            <td className="py-3 px-2 sm:px-4 text-gray-300 text-sm hidden sm:table-cell">
                               {node.metadata.recordCount ? node.metadata.recordCount.toLocaleString() : '-'}
                             </td>
-                            <td className="py-3 px-4 text-gray-300">{node.metadata.size || '-'}</td>
-                            <td className="py-3 px-4 text-gray-300">{node.metadata.owner}</td>
-                            <td className="py-3 px-4 text-gray-300">{node.metadata.lastUpdated}</td>
+                            <td className="py-3 px-2 sm:px-4 text-gray-300 text-sm hidden md:table-cell">{node.metadata.size || '-'}</td>
+                            <td className="py-3 px-2 sm:px-4 text-gray-300 text-sm hidden lg:table-cell">{node.metadata.owner}</td>
+                            <td className="py-3 px-2 sm:px-4 text-gray-300 text-sm hidden lg:table-cell">{node.metadata.lastUpdated}</td>
                           </tr>
                         ))}
                       </tbody>

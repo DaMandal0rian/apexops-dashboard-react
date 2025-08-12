@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { Header } from "@/components/dashboard/header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,7 +19,8 @@ export default function GpuResources() {
     queryKey: ["/api/gpu-resources"],
   });
 
-  const filteredResources = resources.filter((resource: any) => {
+  const resourcesArray = Array.isArray(resources) ? resources : [];
+  const filteredResources = resourcesArray.filter((resource: any) => {
     const matchesSearch = resource.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          resource.provider.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || resource.status === statusFilter;
@@ -36,16 +38,17 @@ export default function GpuResources() {
     }
   };
 
-  const uniqueProviders = [...new Set(resources.map((r: any) => r.provider))];
+  const uniqueProviders = Array.from(new Set(resourcesArray.map((r: any) => r.provider)));
 
   return (
     <div className="min-h-screen bg-dark-900 text-gray-100">
       <Sidebar />
+      <MobileNav />
       
-      <div className="ml-64 min-h-screen">
+      <div className="md:ml-64 min-h-screen">
         <Header />
         
-        <main className="p-6">
+        <main className="p-4 md:p-6">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-3xl font-bold text-white">GPU Resources</h1>
@@ -93,7 +96,7 @@ export default function GpuResources() {
           {/* Results Count */}
           <div className="mb-4">
             <p className="text-gray-400">
-              Showing {filteredResources.length} of {resources.length} GPU resources
+              Showing {filteredResources.length} of {resourcesArray.length} GPU resources
             </p>
           </div>
 
@@ -113,7 +116,7 @@ export default function GpuResources() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredResources.map((resource: any) => (
+              {(Array.isArray(filteredResources) ? filteredResources : []).map((resource: any) => (
                 <Card key={resource.id} className="bg-dark-800 border-gray-700 hover:border-gray-600 transition-colors">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
