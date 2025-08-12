@@ -105,7 +105,8 @@ function ClusterManagement() {
             </thead>
             <tbody>
               {jobs.map((j, idx) => (
-                <tr key={idx}>
+              {jobs.map((j) => (
+                <tr key={j.id || j.name}>
                   <td>{j.name}</td>
                   <td>{j.cluster}</td>
                   <td>{j.status}</td>
