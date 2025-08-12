@@ -97,7 +97,7 @@ function AdminNavbar(props) {
             <span className="navbar-toggler-bar navbar-kebab" />
           </NavbarToggler>
           <Collapse navbar isOpen={collapseOpen}>
-            <Nav className="ml-auto" navbar>
+            <Nav className="ms-auto" navbar>
               <InputGroup className="search-bar">
                 <Button color="link" onClick={toggleModalSearch}>
                   <i className="tim-icons icon-zoom-split" />
@@ -108,14 +108,13 @@ function AdminNavbar(props) {
                 <DropdownToggle
                   caret
                   color="default"
-                  data-toggle="dropdown"
                   nav
                 >
                   <div className="notification d-none d-lg-block d-xl-block" />
                   <i className="tim-icons icon-sound-wave" />
                   <p className="d-lg-none">Notifications</p>
                 </DropdownToggle>
-                <DropdownMenu className="dropdown-navbar" right tag="ul">
+                <DropdownMenu className="dropdown-navbar" end tag="ul">
                   <NavLink tag="li">
                     <DropdownItem className="nav-item">
                       Mike John responded to your email
@@ -156,7 +155,7 @@ function AdminNavbar(props) {
                   <b className="caret d-none d-lg-block d-xl-block" />
                   <p className="d-lg-none">Log out</p>
                 </DropdownToggle>
-                <DropdownMenu className="dropdown-navbar" right tag="ul">
+                <DropdownMenu className="dropdown-navbar" end tag="ul">
                   <NavLink tag="li">
                     <DropdownItem className="nav-item">Profile</DropdownItem>
                   </NavLink>
